@@ -2,7 +2,7 @@
 // sizes are in mm
 
 ball_rad = 8;
-ball_fudge = 0.3;
+ball_fudge = 0.35;
 socket_slits_n = 5;
 bar_irad = 8.0;
 bar_orad = 12;
