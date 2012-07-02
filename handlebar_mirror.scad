@@ -2,7 +2,7 @@
 // sizes are in mm
 
 ball_rad = 8;
-ball_fudge = 0.35;
+ball_fudge = 0.3;
 socket_slits_n = 5;
 bar_irad = 8.0;
 bar_orad = 12;
@@ -15,7 +15,7 @@ taper_angle = 5; // degrees
 
 plug_height = bar_depth/3;
 
-screw_rad = 4/2 + 0.5;
+screw_rad = 4/2 + 0.6;
 screw_head_rad = 7/2;
 
 mirror_angle = 45; // degrees
