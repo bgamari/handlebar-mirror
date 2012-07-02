@@ -29,7 +29,7 @@ module bar_insert() {
             translate([0,0,-2])
             cylinder(r=bar_orad, h=2);			// bar-end cap
         
-            translate([0,0,-ball_rad-1])
+            translate([0,0,-ball_rad-0.5])
             sphere(r=ball_rad-ball_fudge);		// ball
         }
         cylinder(r1=insert_irad-bar_depth*sin(taper_angle), r2=insert_irad, h=bar_depth+1);		// tapered hole
