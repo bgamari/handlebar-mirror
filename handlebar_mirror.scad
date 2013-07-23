@@ -3,13 +3,12 @@
 
 ball_rad = 8;
 ball_fudge = 0.02;
-socket_slits_n = 2;
 bar_irad = 8.0;
 bar_orad = 12;
 bar_depth = 20;
 
 insert_slits_n = 5; // Number of slits in bar insert
-insert_irad = 7;
+insert_irad = 6;
 
 taper_angle = 5; // degrees
 
@@ -66,80 +65,44 @@ module m4_nut_catch(l) {
     hexagon(height=7.6, depth=l);
 }
 
-// socket
-module socket(ball_frac = 0.75, slits_frac = 0.8) {
-    module hi() {
-        thickness = 2.4;
-        r = ball_rad+thickness/2;
-        angle = 20;
-        difference() {
-            circle(r=ball_rad+thickness);
-            circle(r=ball_rad);
-            translate([-2*ball_rad, -3*ball_rad/2]) square([2*ball_rad, 3*ball_rad]);
-            polygon([ [0,0]
-                    , [2*ball_rad*cos(-angle), 2*ball_rad*sin(-angle)]
-                    , [0, -2*ball_rad]
-                    ]);
-        }
-        translate([r*cos(-angle), r*sin(-angle)])
-        circle(r=thickness/2, $fn=10);
-    }
-
-    mirror([0,0,1]) 
-    difference() {
-        mirror([0,0,1]) rotate_extrude() hi();
-
-        translate([0,0, -2*(slits_frac-0.5)*ball_rad])
-        slits(socket_slits_n, 3+ball_rad, 2*ball_rad);
-    }
-}
-
-module socket2(ball_frac, slits_frac) {
-    outer_rad = 3.0+ball_rad;
-    mirror([0,0,1])
-    difference() {
-        union() {
-            sphere(r=outer_rad);
-            translate([0,0, -ball_rad])
-            cylinder(r1=bar_orad, r2=outer_rad, h=6);
-        }
-
-        sphere(r=ball_rad);
-
-        translate([0,0, 2*(ball_frac-0.5)*ball_rad])
-        translate([-3*ball_rad/2, -3*ball_rad/2, 0])
-        cube([3*ball_rad, 3*ball_rad, 2*ball_rad]);
-
-        translate([0,0, -2*(slits_frac-0.5)*ball_rad])
-        slits(socket_slits_n, 3+ball_rad, 2*ball_rad);
-    }
-}
-
 module mirror_mount() {
     mount_length = 2*bar_orad / sin(mirror_angle);
     ball_frac = 0.70;
-    slits_frac = 0.8;
-    socket_offset = ball_rad*(slits_frac-1) - 4;
+    l = 15;
 
-    translate([0,0,ball_rad/2 - socket_offset - 0.5])
     difference() {
-        union() {
-            cylinder(r=bar_orad, h=mount_length);
+        cylinder(r=bar_orad, h=mount_length+l);
 
-            translate([0,0, socket_offset-0.3])
-            socket2(ball_frac=ball_frac, slits_frac=slits_frac);
-        }
+        // cut out side
+        translate([0, 0, -1])
+        rotate_extrude()
+        translate([5+bar_orad, 0])
+        circle(8);
 
-        translate([0,0, -1.2*ball_rad])
-        cylinder(r1=1.1*ball_rad, r2=0.7*ball_rad, h=3);
-
-        translate([0,0, socket_offset])
+        // ball
+        translate([0, 0, ball_rad * (1 - ball_frac)])
         sphere(r=ball_rad);
 
+        // slit
+        cube([1+2*bar_orad, 1, 0.85*mount_length + l], center=true);
+        
+        // mirror flat
+        translate([0, 0, l])
         translate([0, 0, mount_length*sin(mirror_angle)/2])
         rotate(a=mirror_angle, v=[1,0,0])
         translate([0, 0, mount_length*sin(mirror_angle)/2])
-        cube([2*bar_orad, mount_length/sin(mirror_angle), mount_length*sin(mirror_angle)], center=true);
+        cube([1+2*bar_orad, mount_length/sin(mirror_angle), mount_length*sin(mirror_angle)], center=true);
+
+        translate([0, 0, 1.8*ball_rad]) {
+            // nut catch
+            rotate([90,0,0])
+            translate([0, 0, bar_orad * 0.7])
+            m4_nut_catch(bar_orad);
+
+            // bolt hole
+            rotate([90,0,0])
+            cylinder(r=4.2/2, h=3*bar_orad, center=true);
+        }
     }
 }
 
