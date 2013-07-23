@@ -2,8 +2,8 @@
 // sizes are in mm
 
 ball_rad = 8;
-ball_fudge = 0.35;
-socket_slits_n = 5;
+ball_fudge = 0.02;
+socket_slits_n = 2;
 bar_irad = 8.0;
 bar_orad = 12;
 bar_depth = 20;
@@ -163,5 +163,5 @@ module assembly() {
     translate([0,0,-2*ball_rad]) mirror([0,0,1]) mirror_mount();
 }
     
-print_plate();
+print_plate($fn=50);
 //assembly();
