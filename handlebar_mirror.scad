@@ -2,13 +2,13 @@
 // sizes are in mm
 
 ball_rad = 8;
-ball_fudge = 0.02;
+ball_fudge = -0.05;
 bar_irad = 8.0;
 bar_orad = 12;
 bar_depth = 20;
 
-insert_slits_n = 5; // Number of slits in bar insert
-insert_irad = 6;
+insert_slits_n = 4; // Number of slits in bar insert
+insert_irad = 5.5;
 
 taper_angle = 5; // degrees
 
@@ -26,11 +26,17 @@ module bar_insert() {
             cylinder(r=bar_irad, h=bar_depth);
         
             translate([0,0,-2])
-            cylinder(r=bar_orad, h=2);			// bar-end cap
+            cylinder(r=bar_orad, h=5);			// bar-end cap
         
             translate([0,0,-ball_rad-0.5])
             sphere(r=ball_rad-ball_fudge);		// ball
         }
+
+        translate([0,0,+4])
+        rotate_extrude()
+        translate([bar_orad+1, 0])
+        circle(5);
+
         cylinder(r1=insert_irad-bar_depth*sin(taper_angle), r2=insert_irad, h=bar_depth+1);		// tapered hole
 
         translate([0,0,-ball_rad]) {
