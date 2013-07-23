@@ -2,7 +2,7 @@
 // sizes are in mm
 
 ball_rad = 8;
-ball_fudge = -0.05;
+ball_fudge = -0.08;
 bar_irad = 8.0;
 bar_orad = 12;
 bar_depth = 20;
@@ -15,7 +15,7 @@ taper_angle = 5; // degrees
 plug_height = bar_depth/3;
 
 screw_rad = 4/2 + 0.6;
-screw_head_rad = 7/2;
+screw_head_rad = 7/2 + 0.6;
 
 mirror_angle = 45; // degrees
 
@@ -73,7 +73,7 @@ module m4_nut_catch(l) {
 
 module mirror_mount() {
     mount_length = 2*bar_orad / sin(mirror_angle);
-    ball_frac = 0.70;
+    ball_frac = 0.60;
     l = 15;
 
     difference() {
@@ -83,11 +83,16 @@ module mirror_mount() {
         translate([0, 0, -1])
         rotate_extrude()
         translate([5+bar_orad, 0])
-        circle(8);
+        scale([1,2])
+        circle(7.5);
 
         // ball
         translate([0, 0, ball_rad * (1 - ball_frac)])
         sphere(r=ball_rad);
+
+        // cut out top of ball hole
+        translate([0,0,ball_rad+2])
+        cylinder(r1=0.7*ball_rad, h=3);
 
         // slit
         cube([1+2*bar_orad, 1, 0.85*mount_length + l], center=true);
@@ -102,7 +107,7 @@ module mirror_mount() {
         translate([0, 0, 1.8*ball_rad]) {
             // nut catch
             rotate([90,0,0])
-            translate([0, 0, bar_orad * 0.7])
+            translate([0, 0, bar_orad * 0.8])
             m4_nut_catch(bar_orad);
 
             // bolt hole
