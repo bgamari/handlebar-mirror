@@ -3,7 +3,7 @@
 
 ball_rad = 8;
 ball_fudge = -0.08;
-bar_irad = 8.0;
+bar_irad = 9.0;
 bar_orad = 12;
 bar_depth = 20;
 
@@ -19,6 +19,8 @@ screw_head_rad = 7/2 + 0.6;
 
 mirror_angle = 45; // degrees
 
+ball_height = 5;
+
 // bar insert
 module bar_insert() {
     difference() {
@@ -28,19 +30,24 @@ module bar_insert() {
             translate([0,0,-2])
             cylinder(r=bar_orad, h=5);			// bar-end cap
         
-            translate([0,0,-ball_rad-0.5])
+            translate([0,0,-ball_rad-ball_height-1])
+            cylinder(r=0.6*ball_rad, h=ball_height+ball_rad+2);    // ball cylinder
+
+            translate([0,0,-ball_rad-ball_height])
             sphere(r=ball_rad-ball_fudge);		// ball
         }
 
+        // Taper
         translate([0,0,+4])
         rotate_extrude()
         translate([bar_orad+1, 0])
-        circle(5);
+        circle(4);
 
         cylinder(r1=insert_irad-bar_depth*sin(taper_angle), r2=insert_irad, h=bar_depth+1);		// tapered hole
 
-        translate([0,0,-ball_rad]) {
-            cylinder(r=screw_rad, h=2*ball_rad);	// screw hole
+        translate([0,0,-ball_rad-ball_height]) {
+            translate([0,0,-1])
+            cylinder(r=screw_rad, h=2*ball_rad+ball_height);	// screw hole
             mirror([0,0,1])
             cylinder(r=screw_head_rad, h=2*ball_rad);	// counter sink
         }
@@ -84,7 +91,7 @@ module mirror_mount() {
         rotate_extrude()
         translate([5+bar_orad, 0])
         scale([1,2])
-        circle(7.5);
+        circle(6.5);
 
         // ball
         translate([0, 0, ball_rad * (1 - ball_frac)])
